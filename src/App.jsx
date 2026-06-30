@@ -4,13 +4,11 @@ import List from './components/List';
 import './App.css';
 
 function App() {
-  const [items, setItems] = useState([]);
-  const [itemToEdit, setItemToEdit] = useState(null);
-
-  useEffect(() => {
+  const [items, setItems] = useState(() => {
     const storedItems = JSON.parse(localStorage.getItem('items')) || [];
-    setItems(storedItems);
-  }, []);
+    return storedItems;
+  });
+  const [itemToEdit, setItemToEdit] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('items', JSON.stringify(items));
@@ -34,10 +32,12 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <h1>CRUD con LocalStorage</h1>
-      <Form addOrUpdateItem={addOrUpdateItem} itemToEdit={itemToEdit} />
-      <List items={items} deleteItem={deleteItem} editItem={editItem} />
+    <div className="app-container">
+      <div className="card">
+        <h1 className="title">CRUD con LocalStorage</h1>
+        <Form addOrUpdateItem={addOrUpdateItem} itemToEdit={itemToEdit} />
+        <List items={items} deleteItem={deleteItem} editItem={editItem} />
+      </div>
     </div>
   );
 }
