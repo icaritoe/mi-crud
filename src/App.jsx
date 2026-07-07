@@ -9,6 +9,7 @@ function App() {
     return storedItems;
   });
   const [itemToEdit, setItemToEdit] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     localStorage.setItem('items', JSON.stringify(items));
@@ -19,7 +20,7 @@ function App() {
       setItems(items.map(item => item.id === itemToEdit.id ? { ...item, value } : item));
       setItemToEdit(null);
     } else {
-      setItems([...items, { id: Date.now(), value }]);
+      setItems([...items, { id: Date.now(), value, completed: false }]);
     }
   };
 
@@ -34,18 +35,52 @@ function App() {
     setItemToEdit(item);
   };
 
+  const toggleComplete = (id) => {
+    setItems(items.map(item => item.id === id ? { ...item, completed: !item.completed } : item));
+  };
+
+  const clearAllItems = () => {
+    const confirmar = window.confirm("¿Estás completamente seguro de borrar TODO el listado? Esta acción no se puede deshacer.");
+    if (confirmar) {
+      setItems([]);
+    }
+  };
+
+  const filteredItems = items.filter(item =>
+    item.value.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="app-container">
       <div className="card">
         <h1 className="title">CRUD con LocalStorage</h1>
         <Form addOrUpdateItem={addOrUpdateItem} itemToEdit={itemToEdit} />
 
+        <input
+          type="text"
+          className="search-input"
+          placeholder="🔍 Buscar elementos..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
         <div className="items-counter">
           <span>Estado de la lista:</span>
-          <span className="counter-badge">Total: {items.length}</span>
+          <span className="counter-badge">Total: {filteredItems.length}</span>
         </div>
 
-        <List items={items} deleteItem={deleteItem} editItem={editItem} />
+        <List
+          items={filteredItems}
+          deleteItem={deleteItem}
+          editItem={editItem}
+          toggleComplete={toggleComplete}
+        />
+
+        {items.length > 0 && (
+          <button className="btn-clear-all" onClick={clearAllItems}>
+            Borrar Todos los Elementos
+          </button>
+        )}
       </div>
     </div>
   );

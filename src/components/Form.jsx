@@ -16,7 +16,7 @@ function Form({ addOrUpdateItem, itemToEdit }) {
 
     // VALIDACIÓN: evita elementos vacíos o solo con espacios
     if (!inputValue.trim()) {
-      alert("⚠️ Por favor, escribe un texto válido. No se permiten elementos vacíos.");
+      alert("Por favor, escribe un texto válido. No se permiten elementos vacíos.");
       return;
     }
 
